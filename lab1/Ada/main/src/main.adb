@@ -19,7 +19,6 @@ procedure main is
          Sum := Sum + Current_Val;
          Count := Count + 1;
          Current_Val := Current_Val + Long_Long_Integer(Step_Size);
-         delay 0.05;
          exit when Stop_Flags(ID);
       end loop;
 
@@ -33,7 +32,7 @@ procedure main is
 -- manager task
 begin
    for I in 1 .. 3 loop
-      delay 2.0;
+      delay 3.0;
       
       Stop_Flags(I) := True; -- 'I' == stop
       Put_Line("stopping task " & I'Img);

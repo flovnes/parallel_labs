@@ -17,8 +17,14 @@ Thumbs.db
 *.jar
 
 *.ali
+*.gpr
 *.o
 b~*.*
+obj/
+bin/
+alire/
+config
+
 
 *.obj
 *.d
