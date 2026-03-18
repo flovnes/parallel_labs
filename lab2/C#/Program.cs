@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-
-namespace ThreadMinSharp
+﻿namespace Lab2
 {
     class Program
     {
@@ -13,12 +10,12 @@ namespace ThreadMinSharp
         private int globalMinIndex = -1;
         private int finishedThreads = 0;
 
-        private readonly object lockerForMin = new object();
-        private readonly object lockerForCount = new object();
+        private readonly object lockerForMin = new();
+        private readonly object lockerForCount = new();
 
         static void Main(string[] args)
         {
-            Program program = new Program();
+            Program program = new();
             program.InitArr();
 
             program.RunParallelMin();
@@ -49,7 +46,7 @@ namespace ThreadMinSharp
                 int start = i * chunkSize;
                 int end = (i == threadCount - 1) ? dim : (i + 1) * chunkSize;
 
-                Thread t = new Thread(WorkerStep);
+                Thread t = new(WorkerStep);
                 t.Start(new Bound(start, end));
             }
 

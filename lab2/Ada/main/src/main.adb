@@ -2,7 +2,6 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Numerics.Discrete_Random;
 
 procedure main is
-
     Dim        : constant Integer := 100000;
     Thread_Num : constant Integer := 4;
 
