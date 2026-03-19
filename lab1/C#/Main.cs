@@ -60,6 +60,8 @@ namespace Lab1
                             Console.WriteLine($"stopped thread {i + 1} at {sw.Elapsed.TotalSeconds} sec");
                         }
                     }
+
+                    Thread.Sleep(10);
                 }
             });
 

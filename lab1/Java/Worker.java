@@ -1,25 +1,37 @@
-    static class Worker implements Runnable {
-        private final int id;
-        private final int step;
-        private volatile boolean canStop = false;
+class Worker implements Runnable {
 
-        public Worker(int id, int step) {
-            this.id = id;
-            this.step = step;
-        }
+    private final int id;
+    private final int step;
 
-        public void stop() => canStop = true;
+    private volatile boolean canStop = false;
 
-        @Override
-        public void run() {
-            long sum = 0, count = 0, currentValue = 0;
+    private long sum = 0;
+    private long count = 0;
 
-            while (!canStop) {
-                sum += currentValue;
-                count++;
-                currentValue += step;
-            }
-
-            System.out.println("thread " + id + " stopped, elements: " + count + ", sum: " + sum);
-        }
+    public Worker(int id, int step) {
+        this.id = id;
+        this.step = step;
     }
+
+    public void stop() {
+        this.canStop = true;
+    }
+
+    @Override
+    public void run() {
+        long currentValue = 0;
+
+        while (!canStop) {
+            sum += currentValue;
+            count++;
+            currentValue += step;
+        }
+
+        System.out.printf(
+            "thread %d stopped, count: %d, sum: %d%n",
+            id,
+            count,
+            sum
+        );
+    }
+}

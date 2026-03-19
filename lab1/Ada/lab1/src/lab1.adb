@@ -3,8 +3,10 @@ with Ada.Calendar; use Ada.Calendar;
 
 procedure lab1 is
     type Time_Array is array (1 .. 8) of Duration;
-    durations  : constant Time_Array :=
+
+    durations : constant Time_Array :=
        (4.0, 4.0, 7.0, 4.0, 7.0, 4.0, 7.0, 4.0);
+
     type Stop_Array is array (1 .. 8) of Boolean;
     pragma Atomic_Components (Stop_Array);
     stop_flags : Stop_Array := (others => False);

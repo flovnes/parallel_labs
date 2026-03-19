@@ -1,9 +1,6 @@
-# OS files
 .DS_Store
 Thumbs.db
 
-# IDEs
-.vscode/
 .idea/
 .vs/
 .zed/
@@ -11,7 +8,7 @@ Thumbs.db
 *.suo
 *.user
 
-# Generic Build Folders (Matches Lab1/Ada/bin, Lab1/C#/bin, etc.)
+# Generic Build Folders
 **/bin/
 **/obj/
 **/alire/

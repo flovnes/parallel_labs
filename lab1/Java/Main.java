@@ -14,30 +14,40 @@ public class Main {
         }
 
         Thread managerThread = new Thread(() -> {
-            long start = System.currentTimeMillis();
+            long startTime = System.currentTimeMillis();
             boolean[] stopped = new boolean[threadCount];
             int stoppedCount = 0;
 
             while (stoppedCount < threadCount) {
-                double elapsed = (System.currentTimeMillis() - start) / 1000.0;
+                long elapsedMillis = System.currentTimeMillis() - startTime;
+                double elapsedSeconds = elapsedMillis / 1000.0;
+
                 for (int i = 0; i < threadCount; i++) {
-                    if (!stopped[i] && elapsed >= durations[i]) {
+                    if (!stopped[i] && elapsedSeconds >= durations[i]) {
                         workers[i].stop();
                         stopped[i] = true;
                         stoppedCount++;
-                        System.out.println(
-                            "stopped thread " +
-                                (i + 1) +
-                                " at " +
-                                elapsed +
-                                " sec"
+                        System.out.printf(
+                            "stopping thread %d at %.2f sec%n",
+                            (i + 1),
+                            elapsedSeconds
                         );
                     }
+                }
+
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                 }
             }
         });
 
         managerThread.start();
         managerThread.join();
+
+        for (Thread t : threads) {
+            t.join();
+        }
     }
 }
