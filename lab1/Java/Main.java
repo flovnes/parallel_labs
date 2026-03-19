@@ -1,35 +1,43 @@
 public class Main {
-    public static void main(String[] args) {
-        int numberOfThreads = 3;
-        int stepSize = 4;
 
-        Worker[] workers = new Worker[numberOfThreads];
-        Thread[] threads = new Thread[numberOfThreads];
+    public static void main() throws InterruptedException {
+        double[] durations = { 4.0, 4.0, 7.0, 4.0, 7.0, 4.0, 7.0, 4.0 };
+        int threadCount = durations.length;
 
-        for (int i = 0; i < numberOfThreads; i++) {
-            workers[i] = new Worker(i + 1, stepSize);
-            
+        Worker[] workers = new Worker[threadCount];
+        Thread[] threads = new Thread[threadCount];
+
+        for (int i = 0; i < threadCount; i++) {
+            workers[i] = new Worker(i + 1, 2);
             threads[i] = new Thread(workers[i]);
             threads[i].start();
         }
 
         Thread managerThread = new Thread(() -> {
-            for (int i = 0; i < numberOfThreads; i++) {
-                sleep(2000);
-                workers[i].stop();
-                System.out.println("Stopping thread " + (i + 1));
+            long start = System.currentTimeMillis();
+            boolean[] stopped = new boolean[threadCount];
+            int stoppedCount = 0;
+
+            while (stoppedCount < threadCount) {
+                double elapsed = (System.currentTimeMillis() - start) / 1000.0;
+                for (int i = 0; i < threadCount; i++) {
+                    if (!stopped[i] && elapsed >= durations[i]) {
+                        workers[i].stop();
+                        stopped[i] = true;
+                        stoppedCount++;
+                        System.out.println(
+                            "stopped thread " +
+                                (i + 1) +
+                                " at " +
+                                elapsed +
+                                " sec"
+                        );
+                    }
+                }
             }
         });
-        
-        managerThread.start();
-        System.out.println("All threads started, waiting.");
-    }
 
-    private static void sleep(long t) {
-        try {
-            Thread.sleep(t);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        managerThread.start();
+        managerThread.join();
     }
 }

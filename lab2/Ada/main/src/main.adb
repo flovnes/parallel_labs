@@ -1,100 +1,86 @@
 with Ada.Text_IO; use Ada.Text_IO;
-with Ada.Numerics.Discrete_Random;
 
 procedure main is
-    Dim        : constant Integer := 100000;
-    Thread_Num : constant Integer := 4;
+    arr_size     : constant Integer := 1000000000;
+    thread_count : constant Integer := 12;
 
-    type Int_Array is array (1 .. Dim) of Integer;
-    Arr : Int_Array;
+    type Int_Array is array (0 .. arr_size - 1) of Integer;
+    type Int_Ptr is access Int_Array;
 
-    procedure Init_Arr is
-        package Random_Int is new Ada.Numerics.Discrete_Random (Integer);
-        G : Random_Int.Generator;
-    begin
-        Random_Int.Reset (G);
-        for I in 1 .. Dim loop
-            Arr (I) := I + 10;
-        end loop;
-
-        Arr (Dim / 2 + 7) := -474;
-    end Init_Arr;
-
-    protected Min_Manager is
-        procedure Set_Part_Min (Val : in Integer; Idx : in Integer);
-        entry Get_Result (Min_Val : out Integer; Min_Idx : out Integer);
+    protected res is
+        procedure update (val : in Integer; idx : in Integer);
+        entry get_result (val : out Integer; idx : out Integer);
     private
-        Global_Min     : Integer := Integer'Last;
-        Global_Min_Idx : Integer := -1;
-        Tasks_Count    : Integer := 0;
-    end Min_Manager;
+        min_val  : Integer := Integer'Last;
+        min_idx  : Integer := -1;
+        finished : Integer := 0;
+    end res;
 
-    protected body Min_Manager is
-        procedure Set_Part_Min (Val : in Integer; Idx : in Integer) is
+    protected body res is
+        procedure update (val : in Integer; idx : in Integer) is
         begin
-            if Val < Global_Min then
-                Global_Min := Val;
-                Global_Min_Idx := Idx;
+            if val < min_val then
+                min_val := val;
+                min_idx := idx;
             end if;
-            Tasks_Count := Tasks_Count + 1;
-        end Set_Part_Min;
+            finished := finished + 1;
+        end update;
 
-        entry Get_Result (Min_Val : out Integer; Min_Idx : out Integer)
-           when Tasks_Count = Thread_Num
+        entry get_result (val : out Integer; idx : out Integer)
+           when finished = thread_count
         is
         begin
-            Min_Val := Global_Min;
-            Min_Idx := Global_Min_Idx;
-        end Get_Result;
-    end Min_Manager;
+            val := min_val;
+            idx := min_idx;
+        end get_result;
+    end res;
 
-    task type Finder_Thread is
-        entry Start (Start_Index, Finish_Index : in Integer);
-    end Finder_Thread;
+    task type worker is
+        entry start (s, e : Integer; arr : Int_Ptr);
+    end worker;
 
-    task body Finder_Thread is
-        L_Start, L_Finish : Integer;
-        Local_Min         : Integer := Integer'Last;
-        Local_Idx         : Integer := -1;
+    task body worker is
+        low, high : Integer;
+        m         : Integer := Integer'Last;
+        idx       : Integer := -1;
+        local_arr : Int_Ptr;
     begin
-        accept Start (Start_Index, Finish_Index : in Integer) do
-            L_Start := Start_Index;
-            L_Finish := Finish_Index;
-        end Start;
+        accept start (s, e : Integer; arr : Int_Ptr) do
+            low := s;
+            high := e;
+            local_arr := arr;
+        end start;
 
-        for I in L_Start .. L_Finish loop
-            if Arr (I) < Local_Min then
-                Local_Min := Arr (I);
-                Local_Idx := I;
+        for i in low .. high loop
+            if local_arr (i) < m then
+                m := local_arr (i);
+                idx := i;
             end if;
         end loop;
 
-        Min_Manager.Set_Part_Min (Local_Min, Local_Idx);
-    end Finder_Thread;
+        res.update (m, idx);
+    end worker;
 
-    procedure Parallel_Min is
-        Threads                : array (1 .. Thread_Num) of Finder_Thread;
-        Chunk_Size             : Integer := Dim / Thread_Num;
-        Result_Min, Result_Idx : Integer;
-        Low, High              : Integer;
-    begin
-        for I in 1 .. Thread_Num loop
-            Low := (I - 1) * Chunk_Size + 1;
-            if I = Thread_Num then
-                High := Dim;
-            else
-                High := I * Chunk_Size;
-            end if;
-
-            Threads (I).Start (Low, High);
-        end loop;
-
-        Min_Manager.Get_Result (Result_Min, Result_Idx);
-
-        Put_Line ("value:" & Result_Min'Img & ", index -> " & Result_Idx'Img);
-    end Parallel_Min;
+    arr                  : Int_Ptr;
+    workers              : array (1 .. thread_count) of worker;
+    chunk                : Integer := arr_size / thread_count;
+    final_min, final_idx : Integer;
 
 begin
-    Init_Arr;
-    Parallel_Min;
+    arr := new Int_Array;
+
+    for i in 0 .. arr_size - 1 loop
+        arr (i) := i;
+    end loop;
+    arr (arr_size / 2) := -4;
+
+    for i in 1 .. thread_count loop
+        workers (i).start
+           ((i - 1) * chunk,
+            (if i = thread_count then arr_size - 1 else i * chunk - 1),
+            arr);
+    end loop;
+
+    res.get_result (final_min, final_idx);
+    Put_Line ("min:" & final_min'Img & ", index:" & final_idx'Img);
 end main;

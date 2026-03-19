@@ -1,23 +1,23 @@
 [GENERATED OBJECT FILE]
 b__main.o
 [PROJECT FILES]
-C:\4\repos\uni\2025-2026\paralel\lab1\Ada\main\main.gpr
-20260301205800 c45e3cde2570b5ff63ce04eda2b64667
-C:\4\repos\uni\2025-2026\paralel\lab1\Ada\main\config\main_config.gpr
-20260301205800 fd4690c57a1eb8e29d1b8fa6383e0919
+C:\4\uni\2025-2026\parallel_labs\lab2\Ada\main\main.gpr
+20260318130800 1acf0045eb8b3ec0f94a33f0f3f36649
+C:\4\uni\2025-2026\parallel_labs\lab2\Ada\main\config\main_config.gpr
+20260318130800 b199958c48c285955a670718465a123d
 [BOUND OBJECT FILES]
-C:\4\repos\uni\2025-2026\paralel\lab1\Ada\main\obj\development\main.o
+C:\4\uni\2025-2026\parallel_labs\lab2\Ada\main\obj\development\main.o
 [GENERATED SOURCE FILES]
 b__main.ads
 b__main.adb
 b__main.ali
 [RESULTING OPTIONS]
--LC:\4\repos\uni\2025-2026\paralel\lab1\Ada\main\obj\development\
--LC:\4\repos\uni\2025-2026\paralel\lab1\Ada\main\obj\development\
--LC:/users/nick/appdata/local/alire/cache/toolchains/gnat_native_15.2.1_346e2e00/lib/gcc/x86_64-w64-mingw32/15.2.0/adalib/
+-LC:\4\uni\2025-2026\parallel_labs\lab2\Ada\main\obj\development\
+-LC:\4\uni\2025-2026\parallel_labs\lab2\Ada\main\obj\development\
+-LC:/users/fv/appdata/local/alire/cache/toolchains/gnat_native_15.2.1_346e2e00/lib/gcc/x86_64-w64-mingw32/15.2.0/adalib/
 -static
-C:/users/nick/appdata/local/alire/cache/toolchains/gnat_native_15.2.1_346e2e00/lib/gcc/x86_64-w64-mingw32/15.2.0/adalib/libgnarl.a
-C:/users/nick/appdata/local/alire/cache/toolchains/gnat_native_15.2.1_346e2e00/lib/gcc/x86_64-w64-mingw32/15.2.0/adalib/libgnat.a
+C:/users/fv/appdata/local/alire/cache/toolchains/gnat_native_15.2.1_346e2e00/lib/gcc/x86_64-w64-mingw32/15.2.0/adalib/libgnarl.a
+C:/users/fv/appdata/local/alire/cache/toolchains/gnat_native_15.2.1_346e2e00/lib/gcc/x86_64-w64-mingw32/15.2.0/adalib/libgnat.a
 -Xlinker
 --stack=0x800000,0x1000
 -mthreads

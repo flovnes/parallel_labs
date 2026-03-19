@@ -1,106 +1,67 @@
 ﻿namespace Lab2
 {
-    class Program
+    class Result
     {
-        private static readonly int dim = 1000000;
-        private static readonly int threadCount = 4;
-        private readonly int[] arr = new int[dim];
+        public int Min { get; private set; } = int.MaxValue;
+        public int Index { get; private set; } = -1;
+        private readonly object locker = new();
 
-        private int globalMin = int.MaxValue;
-        private int globalMinIndex = -1;
-        private int finishedThreads = 0;
-
-        private readonly object lockerForMin = new();
-        private readonly object lockerForCount = new();
-
-        static void Main(string[] args)
+        public void Update(int val, int idx)
         {
-            Program program = new();
-            program.InitArr();
+            lock (locker)
+                if (val < Min) { Min = val; Index = idx; }
+        }
+    }
 
-            program.RunParallelMin();
+    class Worker(int[] arr, int start, int end, Result res)
+    {
+        public void FindMin()
+        {
+            int min = int.MaxValue;
+            int index = -1;
 
-            Console.WriteLine($"value: {program.globalMin}, index -> {program.globalMinIndex}");
+            for (int i = start; i < end; i++)
+                if (arr[i] < min) { min = arr[i]; index = i; }
+            res.Update(min, index);
+        }
+    }
 
-            Console.ReadKey();
+    class App
+    {
+        private readonly int arraySize = 1000000000;
+        private readonly int threadCount = 4;
+        private readonly int[] arr;
+        private readonly Result res;
+
+        public App()
+        {
+            arr = new int[arraySize];
+            res = new Result();
         }
 
-        private void InitArr()
+        public void Run()
         {
-            Random rand = new Random();
-            for (int i = 0; i < dim; i++)
-            {
-                arr[i] = rand.Next(1, 1000000);
-            }
+            for (int i = 0; i < arraySize; i++) arr[i] = i;
+            arr[arraySize / 2] = -4;
 
-            int randomIndex = rand.Next(0, dim);
-            arr[randomIndex] = -474;
-        }
-
-        public void RunParallelMin()
-        {
-            int chunkSize = dim / threadCount;
+            Thread[] threads = new Thread[threadCount];
+            int chunk = arraySize / threadCount;
 
             for (int i = 0; i < threadCount; i++)
             {
-                int start = i * chunkSize;
-                int end = (i == threadCount - 1) ? dim : (i + 1) * chunkSize;
-
-                Thread t = new(WorkerStep);
-                t.Start(new Bound(start, end));
+                int s = i * chunk;
+                int e = (i == threadCount - 1) ? arraySize : (i + 1) * chunk;
+                threads[i] = new Thread(new Worker(arr, s, e, res).FindMin);
+                threads[i].Start();
             }
 
-            lock (lockerForCount)
-            {
-                while (finishedThreads < threadCount)
-                {
-                    Monitor.Wait(lockerForCount);
-                }
-            }
+            foreach (var t in threads) t.Join();
+            Console.WriteLine($"min: {res.Min}, index: {res.Index}");
         }
+    }
 
-        private void WorkerStep(object param)
-        {
-            if (param is Bound b)
-            {
-                int localMin = int.MaxValue;
-                int localIndex = -1;
-
-                for (int i = b.StartIndex; i < b.FinishIndex; i++)
-                {
-                    if (arr[i] < localMin)
-                    {
-                        localMin = arr[i];
-                        localIndex = i;
-                    }
-                }
-
-                lock (lockerForMin)
-                {
-                    if (localMin < globalMin)
-                    {
-                        globalMin = localMin;
-                        globalMinIndex = localIndex;
-                    }
-                }
-
-                lock (lockerForCount)
-                {
-                    finishedThreads++;
-                    Monitor.Pulse(lockerForCount);
-                }
-            }
-        }
-
-        class Bound
-        {
-            public int StartIndex { get; }
-            public int FinishIndex { get; }
-            public Bound(int start, int finish)
-            {
-                StartIndex = start;
-                FinishIndex = finish;
-            }
-        }
+    class Program
+    {
+        static void Main() => new App().Run();
     }
 }

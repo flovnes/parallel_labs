@@ -1,0 +1,43 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+.vs/
+.zed/
+*.iml
+*.suo
+*.user
+
+# Generic Build Folders (Matches Lab1/Ada/bin, Lab1/C#/bin, etc.)
+**/bin/
+**/obj/
+**/alire/
+**/config/
+
+# C# / .NET
+*.dll
+*.pdb
+
+# Java
+*.class
+*.jar
+
+# Ada
+*.ali
+*.o
+*.bexch
+*.stderr
+*.cswi
+b~*.*
+
+# C++ / Compiled
+*.obj
+*.d
+*.ilk
+*.exp
+*.exe
+*.out
+*.app

@@ -35,15 +35,22 @@ A -gnatyx
 A -gnatW8
 A -mtune=generic
 A -march=x86-64
-P ZX
+P SS ZX
 
 RN
-RV NO_DELAY
-RV NO_FIXED_POINT
+RV SIMPLE_BARRIERS
+RV NO_ALLOCATORS
+RV NO_EXCEPTION_HANDLERS
+RV NO_EXCEPTION_PROPAGATION
+RV NO_EXCEPTIONS
 RV NO_IO
 RV NO_IMPLICIT_CONDITIONALS
-RV NO_LONG_LONG_INTEGERS
-RV NO_RELATIVE_DELAY
+RV NO_LOCAL_ALLOCATORS
+RV NO_LOCAL_PROTECTED_OBJECTS
+RV NO_NESTED_FINALIZATION
+RV NO_PROTECTED_TYPES
+RV NO_SECONDARY_STACK
+RV NO_STANDARD_ALLOCATORS_AFTER_ELABORATION
 RV NO_STANDARD_STORAGE_POOLS
 RV NO_TASK_HIERARCHY
 RV NO_TASKING
@@ -51,27 +58,35 @@ RV NO_DEFAULT_INITIALIZATION
 RV NO_DYNAMIC_SIZED_OBJECTS
 RV NO_IMPLEMENTATION_ATTRIBUTES
 RV NO_IMPLEMENTATION_PRAGMAS
+RV NO_IMPLICIT_LOOPS
+RV MAX_PROTECTED_ENTRIES=1
+RV MAX_TASK_ENTRIES=1
 RV MAX_TASKS=1+
+RV MAX_ENTRY_QUEUE_LENGTH=1+
 
-U main%b		main.adb		d4ebb694 NE OO SU IL
+U main%b		main.adb		901a3d2a NE OO SU IL
 W ada%s			ada.ads			ada.ali
-Z ada.calendar.delays%s	a-caldel.adb		a-caldel.ali
+Z ada.exceptions%s	a-except.adb		a-except.ali
 Z ada.real_time%s	a-reatim.adb		a-reatim.ali
 Z ada.strings.text_buffers%s  a-sttebu.adb	a-sttebu.ali
 W ada.text_io%s		a-textio.adb		a-textio.ali
 Z system%s		system.ads		system.ali
+Z system.finalization_primitives%s  s-finpri.adb  s-finpri.ali
 Z system.img_int%s	s-imgint.ads		s-imgint.ali
-Z system.img_lli%s	s-imglli.ads		s-imglli.ali
 Z system.parameters%s	s-parame.adb		s-parame.ali
+Z system.secondary_stack%s  s-secsta.adb	s-secsta.ali
 Z system.soft_links%s	s-soflin.adb		s-soflin.ali
 Z system.task_info%s	s-tasinf.adb		s-tasinf.ali
 Z system.tasking%s	s-taskin.adb		s-taskin.ali
+Z system.tasking.protected_objects%s  s-taprob.adb  s-taprob.ali
+Z system.tasking.protected_objects.entries%s  s-tpoben.adb  s-tpoben.ali
+Z system.tasking.protected_objects.operations%s  s-tpobop.adb  s-tpobop.ali
+Z system.tasking.rendezvous%s  s-tasren.adb	s-tasren.ali
 Z system.tasking.stages%s  s-tassta.adb		s-tassta.ali
 
 D ada.ads		20250808065140 76789da1 ada%s
-D a-calend.ads		20250808065140 bf7f3cc9 ada.calendar%s
-D a-caldel.ads		20250808065140 9f20b83d ada.calendar.delays%s
 D a-except.ads		20250808065140 e7970cd9 ada.exceptions%s
+D a-finali.ads		20250808065140 bf4f806b ada.finalization%s
 D a-ioexce.ads		20250808065140 40018c65 ada.io_exceptions%s
 D a-reatim.ads		20250808065140 d11673fd ada.real_time%s
 D a-stream.ads		20250808065140 17477cbd ada.streams%s
@@ -85,15 +100,16 @@ D interfac.ads		20250808065140 9111f9c1 interfaces%s
 D i-c.ads		20250808065140 e94c966a interfaces.c%s
 D i-cstrin.ads		20250808065140 5409c1a4 interfaces.c.strings%s
 D i-cstrea.ads		20250808065140 ffd01b9d interfaces.c_streams%s
-D main.adb		20260301214106 e004f14a main%b
+D main.adb		20260319091940 a4f57af4 main%b
 D system.ads		20250808065140 a869df9e system%s
 D s-atacco.ads		20250808065140 5868e3ba system.address_to_access_conversions%s
 D s-crtl.ads		20250808065140 beb39b9e system.crtl%s
 D s-exctab.ads		20250808065140 91bef6ef system.exception_table%s
 D s-ficobl.ads		20250808065140 dc5161d4 system.file_control_block%s
+D s-finpri.ads		20250808065140 5970d55a system.finalization_primitives%s
+D s-finroo.ads		20250808065140 0a7c3ed4 system.finalization_root%s
 D s-imagei.ads		20250808065140 5e131ce0 system.image_i%s
 D s-imgint.ads		20250808065140 67e4edfb system.img_int%s
-D s-imglli.ads		20250808065140 d88f4f3b system.img_lli%s
 D s-multip.ads		20250808065140 38ac9f73 system.multiprocessors%s
 D s-osinte.ads		20250808065140 35a74841 system.os_interface%s
 D s-oslock.ads		20250808065140 88eb514b system.os_locks%s
@@ -109,6 +125,10 @@ D s-tasinf.ads		20250808065140 601f6b72 system.task_info%s
 D s-taspri.ads		20250808065140 602eebc0 system.task_primitives%s
 D s-taprop.ads		20250808065140 750673ca system.task_primitives.operations%s
 D s-taskin.ads		20250808065140 38289021 system.tasking%s
+D s-taprob.ads		20250808065140 acd6094d system.tasking.protected_objects%s
+D s-tpoben.ads		20250808065140 60ad3dae system.tasking.protected_objects.entries%s
+D s-tpobop.ads		20250808065140 5f548bb3 system.tasking.protected_objects.operations%s
+D s-tasren.ads		20250808065140 a67a9949 system.tasking.rendezvous%s
 D s-tassta.ads		20250808065140 cca55c94 system.tasking.stages%s
 D s-traent.ads		20250808065140 c81cbf8c system.traceback_entries%s
 D s-unstyp.ads		20250808065140 fa2a7f59 system.unsigned_types%s
@@ -116,42 +136,55 @@ D s-valspe.ads		20250808065140 f810d31c system.val_spec%s
 D s-vaispe.ads		20250808065140 8280550e system.value_i_spec%s
 D s-vauspe.ads		20250808065140 89269ba5 system.value_u_spec%s
 D s-vs_int.ads		20250808065140 06b6b724 system.vs_int%s
-D s-vs_lli.ads		20250808065140 b945cf7d system.vs_lli%s
-D s-vs_llu.ads		20250808065140 8f3536c5 system.vs_llu%s
 D s-vs_uns.ads		20250808065140 e7f47a27 system.vs_uns%s
 D s-wchcon.ads		20250808065140 d9032363 system.wch_con%s
 D s-win32.ads		20250808065140 f77987dc system.win32%s
 G a e
 G c Z b b [main standard 3 11 none]
 X 1 ada.ads
-18K9*Ada 22e8 18|1r6 1r23
-X 12 a-textio.ads
-58K13*Text_IO 785e16 18|1w10 1r27
-565U14*Put_Line 18|26s7 47s7
-X 18 main.adb
-3U11*main 3b11 50l5 50t9
-5A9 Stop_Array(boolean)<integer> 7r29 9r17
-9a4 Stop_Flags{5A9} 23r20 46m7
-11T14 Worker 11d22 11d36 13b14 27l8 27t14 29r9 30r9 31r9 32r9 33r9 34r9 35r9
-. 36r9 37r9 38r10 39r10 40r10
-11i22 ID{integer} 23r31 26r26
-11i36 Step_Size{integer} 21r57
-14i7 Sum{long_long_integer} 19m10 19r17 26r81
-15i7 Count{long_long_integer} 20m10 20r19 26r57
-16i7 Current_Val{long_long_integer} 19r23 21m10 21r25
-29t4 T1{11T14}
-30t4 T2{11T14}
-31t4 T3{11T14}
-32t4 T4{11T14}
-33t4 T5{11T14}
-34t4 T6{11T14}
-35t4 T7{11T14}
-36t4 T8{11T14}
-37t4 T9{11T14}
-38t4 T10{11T14}
-39t4 T11{11T14}
-40t4 T12{11T14}
-44i8 I{integer} 46r18 47r35
+18K9*Ada 22e8 17|1r6 1r23
+X 11 a-textio.ads
+58K13*Text_IO 785e16 17|1w10 1r27
+565U14*Put_Line 17|85s5
+X 17 main.adb
+3U11*main 3b11 86l5 86t9
+4i5 dim{integer} 7r35 66r39 72r19 75r10 80r39
+5i5 thread_count{integer} 30r28 65r40 66r45 77r19 80r21
+7A10 Int_Array(integer)<integer> 8r28 70r16
+8P10 Int_Ptr(7A10) 39r44 46r21 48r45 64r28
+10w15 res 19b20 36l9 36t12 61r9 84r5
+11U19 update 11>27 11>45 20b19 27l13 27t19 61s13
+11i27 val{integer} 20b27 22r16 23r28
+11i45 idx{integer} 20b45 24r28
+12Y15 get_result 12<27 12<46 29b15 35l13 35t23 84s9
+12i27 val{integer} 33m13
+12i46 idx{integer} 34m13
+14i9 min_val{integer} 22r22 23r17 33r20
+15i9 min_idx{integer} 24r17 34r20
+16i9 finished{integer} 26r13 26r25 30r17
+29i27 val{integer}
+29i46 idx{integer}
+38T15 worker 40l9 40e15 42b15 62l9 62t15 65r57
+39Y15 start 39>22 39>25 39>38 48b16 52l13 52t18 78s21
+39i22 s{integer} 49r20
+39i25 e{integer} 50r21
+39p38 arr{8P10} 51r26
+43i9 low{integer} 49m13 54r18
+43i14 high{integer} 50m13 54r25
+44i9 m{integer} 55r32 56m17 61r21
+45i9 idx{integer} 57m17 61r24
+46p9 local_arr{8P10} 51m13 55r16 56r22
+48i23 s{integer}
+48i26 e{integer}
+48p39 arr{8P10}
+54i13 i{integer} 55r27 56r33 57r24
+64p5 arr{8P10} 70m5 73r9 75r5 81r13
+65a5 workers(38T15) 78r9
+66i5 chunk{integer} 79r23 80r56
+67i5 final_min{integer} 84m21 85r24
+67i16 final_idx{integer} 84m32 85r53
+72i9 i{integer} 73r14 73r21
+77i9 i{integer} 78r18 79r14 80r17 80r52
 X 35 s-stausa.ads
 207U14*Initialize 208i<c,__gnat_stack_usage_initialize>22
 272U14*Output_Results 276i<c,__gnat_stack_usage_output_results>22

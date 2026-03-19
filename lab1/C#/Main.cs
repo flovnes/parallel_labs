@@ -1,54 +1,70 @@
-﻿namespace ParallelLab1
+﻿using System.Diagnostics;
+
+namespace Lab1
 {
     class Worker(int id, int step)
     {
-        private readonly int id = id;
-        private readonly int step = step;
-        private volatile bool shouldStop = false;
+        private volatile bool canStop = false;
 
-        public void Stop() => shouldStop = true;
+        public void Stop() => canStop = true;
 
-        public void Calculate() {
+        public void Calculate()
+        {
             long sum = 0;
             long count = 0;
             long currentValue = 0;
 
-            while (!shouldStop) {
+            while (!canStop)
+            {
                 sum += currentValue;
                 count++;
                 currentValue += step;
-                Thread.Sleep(50);
             }
 
-            Console.WriteLine($"Thread {id} stopped. Step count = {count}, Sum = {sum}");
+            Console.WriteLine($"thread {id} stopped, elements: {count}, sum: {sum}");
         }
     }
 
-    class Program {
-        static void Main() {
-            int numberOfThreads = 3;
-            int stepSize = 4;
+    class Program
+    {
+        static void Main()
+        {
+            double[] durations = [4.0, 4.0, 7.0, 4.0, 7.0, 4.0, 7.0, 4.0];
+            int threadCount = durations.Length;
 
-            Thread[] threds = new Thread[numberOfThreads];
-            Worker[] workers = new Worker[numberOfThreads];
+            Worker[] workers = new Worker[threadCount];
+            Thread[] threads = new Thread[threadCount];
 
-            for (int i = 0; i < numberOfThreads; i++) {
-                workers[i] = new Worker(i + 1, stepSize);
-                threds[i] = new Thread(workers[i].Calculate);
-                threds[i].Start();
+            for (int i = 0; i < threadCount; i++)
+            {
+                workers[i] = new Worker(i + 1, 2);
+                threads[i] = new Thread(workers[i].Calculate);
+                threads[i].Start();
             }
 
-            Thread managerThread = new(() => {
-                for (int i = 0; i < numberOfThreads; i++) {
-                    Thread.Sleep(2000); 
-                    workers[i].Stop();
-                    Console.WriteLine($"\n{(i+1)*2000} ms passed, stopping thread {i + 1}");
+            Thread managerThread = new(() =>
+            {
+                Stopwatch sw = Stopwatch.StartNew();
+                bool[] stopped = new bool[threadCount];
+                int stoppedCount = 0;
+
+                while (stoppedCount < threadCount)
+                {
+                    for (int i = 0; i < threadCount; i++)
+                    {
+                        if (!stopped[i] && sw.Elapsed.TotalSeconds >= durations[i])
+                        {
+                            workers[i].Stop();
+                            stopped[i] = true;
+                            stoppedCount++;
+                            Console.WriteLine($"stopped thread {i + 1} at {sw.Elapsed.TotalSeconds} sec");
+                        }
+                    }
                 }
             });
-            
-            managerThread.Start();
 
-            Console.WriteLine("All threads started, waiting.");
+            managerThread.Start();
+            managerThread.Join();
         }
     }
 }
