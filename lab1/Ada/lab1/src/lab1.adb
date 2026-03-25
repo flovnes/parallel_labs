@@ -2,12 +2,12 @@ with Ada.Text_IO;  use Ada.Text_IO;
 with Ada.Calendar; use Ada.Calendar;
 
 procedure lab1 is
-    type Time_Array is array (1 .. 8) of Duration;
+    thread_count : constant Integer := 6;
 
-    durations : constant Time_Array :=
-       (4.0, 4.0, 7.0, 4.0, 7.0, 4.0, 7.0, 4.0);
+    type Time_Array is array (1 .. thread_count) of Duration;
+    durations : constant Time_Array := (3.0, 4.0, 7.0, 4.0, 4.0, 2.0);
 
-    type Stop_Array is array (1 .. 8) of Boolean;
+    type Stop_Array is array (1 .. thread_count) of Boolean;
     pragma Atomic_Components (Stop_Array);
     stop_flags : Stop_Array := (others => False);
 
@@ -43,22 +43,22 @@ procedure lab1 is
             & sum'Img);
     end Worker;
 
-    workers : array (1 .. 8) of Worker;
+    workers : array (1 .. thread_count) of Worker;
 
     start_time    : Time := Clock;
     elapsed       : Duration;
-    stopped       : array (1 .. 8) of Boolean := (others => False);
+    stopped       : array (1 .. thread_count) of Boolean := (others => False);
     stopped_count : Integer := 0;
 
 begin
-    for i in 1 .. 8 loop
+    for i in workers'Range loop
         workers (i).Init (i, 2);
     end loop;
 
-    while stopped_count < 8 loop
+    while stopped_count < thread_count loop
         elapsed := Clock - start_time;
 
-        for i in 1 .. 8 loop
+        for i in workers'Range loop
             if not stopped (i) and then elapsed >= durations (i) then
                 stop_flags (i) := True;
                 stopped (i) := True;
@@ -68,5 +68,6 @@ begin
             end if;
         end loop;
 
+        delay 0.01;
     end loop;
 end lab1;
