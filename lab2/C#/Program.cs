@@ -17,6 +17,7 @@
     {
         public void FindMin()
         {
+            // Random randGen = new();
             int min = int.MaxValue;
             int index = -1;
 

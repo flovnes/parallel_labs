@@ -1,7 +1,11 @@
 with Ada.Text_IO; use Ada.Text_IO;
+with Ada.Numerics.Discrete_Random;
 
 procedure main is
-    arr_size     : constant Integer := 1000000000;
+    package Random_Int is new Ada.Numerics.Discrete_Random (Integer);
+    use Random_Int;
+    RandGen      : Generator;
+    arr_size     : constant Integer := 10000000;
     thread_count : constant Integer := 12;
 
     type Int_Array is array (0 .. arr_size - 1) of Integer;
@@ -67,12 +71,13 @@ procedure main is
     final_min, final_idx : Integer;
 
 begin
+    Reset (RandGen);
     arr := new Int_Array;
 
     for i in 0 .. arr_size - 1 loop
-        arr (i) := i;
+        arr (i) := abs (Random (RandGen)) mod 47;
     end loop;
-    arr (arr_size / 2) := -4;
+    arr (4747474) := -7;
 
     for i in 1 .. thread_count loop
         workers (i).start

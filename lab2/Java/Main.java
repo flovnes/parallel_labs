@@ -30,6 +30,7 @@ public class Main {
         public void run() {
             int min = Integer.MAX_VALUE;
             int index = -1;
+            // java.util.Random randGen = new java.util.Random();
 
             for (int i = start; i < end; i++) {
                 if (arr[i] < min) {
