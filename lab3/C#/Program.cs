@@ -40,28 +40,33 @@ namespace Lab3
     {
         static void Main()
         {
-            int totalItems = 40, storageSize = 5;
-            int prodCount = 4, consCount = 4;
+            int totalItems = 20, storageSize = 5;
+            int prodCount = 5, consCount = 2;
             
             Storage storage = new(storageSize);
-            int itemsPerThread = totalItems / prodCount;
-            int extraItems = totalItems % prodCount;
 
-            for (int i = 1; i <= prodCount; i++)
+            int prodBase = totalItems / prodCount;
+            int prodExtra = totalItems % prodCount;
+
+            for (int i = 0; i < prodCount; i++)
             {
-                int threadId = i;
-                int count = itemsPerThread + (i == prodCount - 1 ? extraItems : 0);
+                int threadId = i + 1;
+                int count = prodBase + (i < prodExtra ? 1 : 0);
                 new Thread(() => {
                     for (int j = 0; j < count; j++) 
                         storage.Put($"item {j}", threadId);
                 }).Start();
             }
 
-            for (int i = 1; i <= consCount; i++)
+            int consBase = totalItems / consCount;
+            int consExtra = totalItems % consCount;
+
+            for (int i = 0; i < consCount; i++)
             {
-                int threadId = i;
+                int threadId = i + 1;
+                int count = consBase + (i < consExtra ? 1 : 0);
                 new Thread(() => {
-                    for (int j = 0; j < itemsPerThread; j++) 
+                    for (int j = 0; j < count; j++) 
                         storage.Get(threadId);
                 }).Start();
             }

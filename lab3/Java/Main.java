@@ -36,24 +36,31 @@ class Storage {
 public class Main {
     public static void main(String[] args) {
         int totalItems = 20, storageSize = 5;
-        int prodCount = 2, consCount = 2;
+        int prodCount = 5, consCount = 2;
         Storage storage = new Storage(storageSize);
-        int perThread = totalItems / prodCount;
 
-        for (int i = 1; i <= prodCount; i++) {
-            final int id = i;
+        int prodBase = totalItems / prodCount;
+        int prodExtra = totalItems % prodCount;
+
+        for (int i = 0; i < prodCount; i++) {
+            final int id = i + 1;
+            final int count = prodBase + (i < prodExtra ? 1 : 0);
             new Thread(() -> {
                 try {
-                    for (int j = 0; j < perThread; j++) storage.put("item " + j, id);
+                    for (int j = 0; j < count; j++) storage.put("item " + j, id);
                 } catch (InterruptedException e) {}
             }).start();
         }
 
-        for (int i = 1; i <= consCount; i++) {
-            final int id = i;
+        int consBase = totalItems / consCount;
+        int consExtra = totalItems % consCount;
+
+        for (int i = 0; i < consCount; i++) {
+            final int id = i + 1;
+            final int count = consBase + (i < consExtra ? 1 : 0);
             new Thread(() -> {
                 try {
-                    for (int j = 0; j < perThread; j++) storage.get(id);
+                    for (int j = 0; j < count; j++) storage.get(id);
                 } catch (InterruptedException e) {}
             }).start();
         }
