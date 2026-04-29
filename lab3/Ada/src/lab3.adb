@@ -10,20 +10,27 @@ procedure main is
       entry Put(Item : in Integer; ID : in Integer);
       entry Get(ID : in Integer);
    private
+      Buffer : array (0 .. Storage_Size - 1) of Integer;
+      In_Idx, Out_Idx : Integer := 0;
       Count : Integer := 0;
    end Storage;
 
    protected body Storage is
       entry Put(Item : in Integer; ID : in Integer) when Count < Storage_Size is
       begin
+         Buffer(In_Idx) := Item;
+         In_Idx := (In_Idx + 1) mod Storage_Size;
          Count := Count + 1;
          Put_Line("Producer" & ID'Img & " added item" & Item'Img);
       end Put;
 
       entry Get(ID : in Integer) when Count > 0 is
+         Item : Integer;
       begin
+         Item := Buffer(Out_Idx);
+         Out_Idx := (Out_Idx + 1) mod Storage_Size;
          Count := Count - 1;
-         Put_Line("Consumer" & ID'Img & " took item");
+         Put_Line("Consumer" & ID'Img & " took item" & Item'Img);
       end Get;
    end Storage;
 

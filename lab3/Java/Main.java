@@ -1,8 +1,9 @@
-import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.concurrent.Semaphore;
 
 class Storage {
-    private final ArrayList<String> items = new ArrayList<>();
+    private final Queue<String> items = new LinkedList<>();
     private final Semaphore full, empty;
     private final Object locker = new Object();
 
@@ -24,7 +25,7 @@ class Storage {
         empty.acquire();
         String item;
         synchronized (locker) {
-            item = items.remove(0);
+            item = items.poll();
             System.out.println("Consumer " + id + " took: " + item);
         }
         full.release();

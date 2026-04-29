@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -6,7 +6,7 @@ namespace Lab3
 {
     class Storage(int size)
     {
-        private readonly List<string> items = new();
+        private readonly Queue<string> items = new();
         private readonly Semaphore full = new(size, size);
         private readonly Semaphore empty = new(0, size);
         private readonly object locker = new();
@@ -16,7 +16,7 @@ namespace Lab3
             full.WaitOne();
             lock (locker)
             {
-                items.Add(item);
+                items.Enqueue(item);
                 Console.WriteLine($"Producer {id} added: {item}");
             }
             empty.Release();
@@ -28,8 +28,7 @@ namespace Lab3
             string item;
             lock (locker)
             {
-                item = items[0];
-                items.RemoveAt(0);
+                item = items.Dequeue();
                 Console.WriteLine($"Consumer {id} took: {item}");
             }
             full.Release();
@@ -46,12 +45,14 @@ namespace Lab3
             
             Storage storage = new(storageSize);
             int itemsPerThread = totalItems / prodCount;
+            int extraItems = totalItems % prodCount;
 
             for (int i = 1; i <= prodCount; i++)
             {
                 int threadId = i;
+                int count = itemsPerThread + (i == prodCount - 1 ? extraItems : 0);
                 new Thread(() => {
-                    for (int j = 0; j < itemsPerThread; j++) 
+                    for (int j = 0; j < count; j++) 
                         storage.Put($"item {j}", threadId);
                 }).Start();
             }
