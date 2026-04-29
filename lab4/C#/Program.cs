@@ -55,11 +55,15 @@ namespace Lab4
         static void Main()
         {
             Table table = new Table();
+            Thread[] threads = new Thread[5];
             for (int i = 0; i < 5; i++)
             {
                 int id = i;
-                new Thread(new Philosopher(id, table).Run).Start();
+                threads[i] = new Thread(new Philosopher(id, table).Run);
+                threads[i].Start();
             }
+            foreach (var t in threads) t.Join();
+            Console.WriteLine("All philosophers have finished dining.");
         }
     }
 }

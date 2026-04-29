@@ -1,7 +1,7 @@
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Numerics.Float_Random;
 
-procedure Main is
+procedure lab4 is
    use Ada.Numerics.Float_Random;
 
    protected type Fork is
@@ -22,6 +22,24 @@ procedure Main is
       end Put;
    end Fork;
 
+   protected Waiter is
+      entry Enter;
+      procedure Leave;
+   private
+      Count : Integer := 0;
+   end Waiter;
+
+   protected body Waiter is
+      entry Enter when Count < 4 is
+      begin
+         Count := Count + 1;
+      end Enter;
+      procedure Leave is
+      begin
+         Count := Count - 1;
+      end Leave;
+   end Waiter;
+
    Forks : array (0 .. 4) of Fork;
 
    task type Philosopher(ID : Integer);
@@ -32,22 +50,19 @@ procedure Main is
    begin
       Reset(Seed);
       for I in 1 .. 5 loop
-         Put_Line("Філософ" & ID'Img & " думає");
+         Put_Line("filosof" & ID'Img & " dymae");
          delay Duration(Random(Seed) * 0.2);
 
-         if ID = 4 then
-            Forks(Left).Pick;
-            Forks(Right).Pick;
-         else
-            Forks(Right).Pick;
-            Forks(Left).Pick;
-         end if;
+         Waiter.Enter;
+         Forks(Right).Pick;
+         Forks(Left).Pick;
 
-         Put_Line("Філософ" & ID'Img & " жує");
+         Put_Line("filosof " & ID'Img & " zhue");
          delay Duration(Random(Seed) * 0.2);
 
          Forks(Left).Put;
          Forks(Right).Put;
+         Waiter.Leave;
       end loop;
    end Philosopher;
 
@@ -56,4 +71,5 @@ procedure Main is
 
 begin
    null;
-end Main;
+   Put_Line("All philosophers have finished dining.");
+end lab4;

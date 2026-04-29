@@ -3,24 +3,22 @@ import java.util.concurrent.Semaphore;
 
 class Table {
     private final Semaphore[] forks = new Semaphore[5];
+    private final Semaphore waiter = new Semaphore(2);
 
     public Table() {
         for (int i = 0; i < 5; i++) forks[i] = new Semaphore(1);
     }
 
     public void getForks(int left, int right, int id) throws InterruptedException {
-        if (id == 4) {
-            forks[left].acquire();
-            forks[right].acquire();
-        } else {
-            forks[right].acquire();
-            forks[left].acquire();
-        }
+        waiter.acquire();
+        forks[right].acquire();
+        forks[left].acquire();
     }
 
     public void putForks(int left, int right) {
         forks[left].release();
         forks[right].release();
+        waiter.release();
     }
 }
 
@@ -51,8 +49,16 @@ class Philosopher extends Thread {
 }
 
 public class Main {
-    public static void main() {
+    public static void main(String[] args) throws InterruptedException {
         Table table = new Table();
-        for (int i = 0; i < 5; i++) new Philosopher(i, table).start();
+        Philosopher[] philosophers = new Philosopher[5];
+        
+        for (int i = 0; i < 5; i++) {
+            philosophers[i] = new Philosopher(i, table);
+            philosophers[i].start();
+        }
+        
+        for (Philosopher p : philosophers) p.join();
+        System.out.println("All philosophers have finished dining.");
     }
 }

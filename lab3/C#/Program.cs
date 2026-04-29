@@ -40,8 +40,8 @@ namespace Lab3
     {
         static void Main()
         {
-            int totalItems = 20, storageSize = 5;
-            int prodCount = 5, consCount = 2;
+            int totalItems = 5, storageSize = 1;
+            int prodCount = 3, consCount = 3;
             
             Storage storage = new(storageSize);
 
