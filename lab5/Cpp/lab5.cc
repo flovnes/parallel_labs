@@ -23,7 +23,7 @@ public:
                 matrix[i][j] = i + j + 1;
             }
         }
-        matrix[5][0] = -1000000; 
+        matrix[5][0] = -1000000;
     }
 
     void calculateTotalSum(int num_threads) {
@@ -38,7 +38,7 @@ public:
         }
 
         double end = omp_get_wtime();
-        cout << "[Sum] Threads: " << num_threads << " | Result: " << total_sum 
+        cout << "[Sum] Threads: " << num_threads << " | Result: " << total_sum
              << " | Time: " << (end - start) << "s" << endl;
     }
 
@@ -65,17 +65,20 @@ public:
                 }
             }
 
-            #pragma omp critical
-            {
-                if (local_min_sum < global_min_sum) {
-                    global_min_sum = local_min_sum;
-                    min_row_index = local_min_index;
+            if (local_min_sum < global_min_sum) {
+                #pragma omp critical
+                {
+                    if (local_min_sum < global_min_sum) {
+                        global_min_sum = local_min_sum;
+                        min_row_index = local_min_index;
+                    }
                 }
             }
+
         }
 
         double end = omp_get_wtime();
-        cout << "[MinRow] Threads: " << num_threads << " | Row: " << min_row_index 
+        cout << "[MinRow] Threads: " << num_threads << " | Row: " << min_row_index
              << " | Value: " << global_min_sum << " | Time: " << (end - start) << "s" << endl;
     }
 

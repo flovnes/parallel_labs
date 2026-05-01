@@ -71,5 +71,4 @@ procedure lab4 is
 
 begin
    null;
-   Put_Line("All philosophers have finished dining.");
 end lab4;

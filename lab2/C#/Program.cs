@@ -33,11 +33,13 @@
         private readonly int threadCount = 4;
         private readonly int[] arr;
         private readonly Result res;
+        private readonly CountdownEvent latch;
 
         public App()
         {
             arr = new int[arraySize];
             res = new Result();
+            latch = new CountdownEvent(threadCount);
         }
 
         public void Run()
@@ -56,7 +58,7 @@
                 threads[i].Start();
             }
 
-            foreach (var t in threads) t.Join();
+            latch.Wait();
             Console.WriteLine($"min: {res.Min}, index: {res.Index}");
         }
     }

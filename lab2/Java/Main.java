@@ -4,6 +4,7 @@ public class Main {
 
         int min = Integer.MAX_VALUE;
         int index = -1;
+        private final CountDownLatch latch = new CountDownLatch(threadCount);
 
         public synchronized void update(int val, int idx) {
             if (val < min) {
@@ -47,6 +48,7 @@ public class Main {
         int threadCount = 12;
         int[] arr = new int[arraySize];
         Result res = new Result();
+        CountDownLatch latch = new CountDownLatch(threadCount);
 
         for (int i = 0; i < arraySize; i++) arr[i] = i;
         arr[arraySize / 2] = -4;
@@ -61,7 +63,7 @@ public class Main {
             threads[i].start();
         }
 
-        for (Thread t : threads) t.join();
+        latch.await();
         System.out.println("min: " + res.min + ", index: " + res.index);
     }
 

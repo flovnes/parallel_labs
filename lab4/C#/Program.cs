@@ -56,14 +56,16 @@ namespace Lab4
         {
             Table table = new Table();
             Thread[] threads = new Thread[5];
+            CountdownEvent latch = new(5);
+
             for (int i = 0; i < 5; i++)
             {
                 int id = i;
                 threads[i] = new Thread(new Philosopher(id, table).Run);
                 threads[i].Start();
             }
-            foreach (var t in threads) t.Join();
-            Console.WriteLine("All philosophers have finished dining.");
+
+            latch.Wait();
         }
     }
 }
