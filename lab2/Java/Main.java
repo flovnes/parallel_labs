@@ -1,10 +1,11 @@
+import java.util.concurrent.CountDownLatch;
+
 public class Main {
 
     static class Result {
 
         int min = Integer.MAX_VALUE;
         int index = -1;
-        private final CountDownLatch latch = new CountDownLatch(threadCount);
 
         public synchronized void update(int val, int idx) {
             if (val < min) {
@@ -19,20 +20,26 @@ public class Main {
         private final int[] arr;
         private final int start, end;
         private final Result res;
+        private final CountDownLatch latch;
 
-        Worker(int[] arr, int start, int end, Result res) {
+        Worker(
+            int[] arr,
+            int start,
+            int end,
+            Result res,
+            CountDownLatch latch
+        ) {
             this.arr = arr;
             this.start = start;
             this.end = end;
             this.res = res;
+            this.latch = latch;
         }
 
         @Override
         public void run() {
             int min = Integer.MAX_VALUE;
             int index = -1;
-            // java.util.Random randGen = new java.util.Random();
-
             for (int i = start; i < end; i++) {
                 if (arr[i] < min) {
                     min = arr[i];
@@ -40,6 +47,7 @@ public class Main {
                 }
             }
             res.update(min, index);
+            latch.countDown();
         }
     }
 
@@ -53,21 +61,18 @@ public class Main {
         for (int i = 0; i < arraySize; i++) arr[i] = i;
         arr[arraySize / 2] = -4;
 
-        Thread[] threads = new Thread[threadCount];
         int chunk = arraySize / threadCount;
-
         for (int i = 0; i < threadCount; i++) {
             int l = i * chunk;
             int r = (i == threadCount - 1) ? arraySize : (i + 1) * chunk;
-            threads[i] = new Thread(new Worker(arr, l, r, res));
-            threads[i].start();
+            new Thread(new Worker(arr, l, r, res, latch)).start();
         }
 
         latch.await();
         System.out.println("min: " + res.min + ", index: " + res.index);
     }
 
-    public static void main() throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException {
         new Main().run();
     }
 }
