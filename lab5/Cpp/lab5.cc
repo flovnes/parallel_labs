@@ -8,12 +8,12 @@ using namespace std;
 const int ROWS = 10000;
 const int COLS = 10000;
 
-class ParallelMatrixApp {
+class Manager {
 private:
     vector<vector<int>> matrix;
 
 public:
-    ParallelMatrixApp() {
+    Manager() {
         matrix.resize(ROWS, vector<int>(COLS));
     }
 
@@ -38,8 +38,7 @@ public:
         }
 
         double end = omp_get_wtime();
-        cout << "[Sum] Threads: " << num_threads << " | Result: " << total_sum
-             << " | Time: " << (end - start) << "s" << endl;
+        cout << "[Sum] Threads: " << num_threads << " Result: " << total_sum << " Time: " << (end - start) << "s" << endl;
     }
 
     void findMinRowSum(int num_threads) {
@@ -78,8 +77,7 @@ public:
         }
 
         double end = omp_get_wtime();
-        cout << "[MinRow] Threads: " << num_threads << " | Row: " << min_row_index
-             << " | Value: " << global_min_sum << " | Time: " << (end - start) << "s" << endl;
+        cout << "[MinRow] Threads: " << num_threads << " Row: " << min_row_index << " Value: " << global_min_sum << " Time: " << (end - start) << "s" << endl;
     }
 
     void run() {
@@ -108,7 +106,7 @@ public:
 };
 
 int main() {
-    ParallelMatrixApp app;
-    app.run();
+    Manager mgr;
+    mgr.run();
     return 0;
 }
